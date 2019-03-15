@@ -32,19 +32,19 @@ def extract_screen_names(ideology):
     rows = cur.fetchall()
  
     for row in rows:
-    	screen_names.append(row[0])
+        screen_names.append(row[0])
 
     return screen_names
 
 def extract_uids(screen_names):
-	global cur
+    global cur
  
     uids = []
     cur.execute("SELECT uid FROM tweet WHERE screen_name in (?)", screen_names)
     rows = cur.fetchall()
  
     for row in rows:
-		uids.append(row[0])
+        uids.append(row[0])
 
     return uids
 

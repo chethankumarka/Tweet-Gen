@@ -28,7 +28,7 @@ def extract_screen_names(ideology):
     global cur
  
     screen_names = []
-    cur.execute("SELECT screen_name FROM user_label WHERE label = (?)", ideology)
+    cur.execute("SELECT distinct(screen_name) FROM user_label WHERE label = %s limit 5000", (ideology, ))
     rows = cur.fetchall()
  
     for row in rows:
@@ -40,7 +40,7 @@ def extract_uids(screen_names):
     global cur
  
     uids = []
-    cur.execute("SELECT uid FROM tweet WHERE screen_name in (?)", screen_names)
+    cur.execute("SELECT distinct(uid) FROM tweet WHERE screen_name in %s and reply_count > 0", (tuple(screen_names),))
     rows = cur.fetchall()
  
     for row in rows:
@@ -52,7 +52,7 @@ def extract_tweets(uids):
     global cur
  
     tweets = []
-    cur.execute("SELECT tid, tweet FROM tweet WHERE uid in (?)", uids)
+    cur.execute("SELECT tid, tweet FROM tweet WHERE uid in %s and reply_count > 0", (tuple(uids),))
     rows = cur.fetchall()
  
     for row in rows:
@@ -64,33 +64,42 @@ def create_dataset(file_handle, tweets):
     global cur
 
     for tweet_tuple in tweets:
-        cur.execute("SELECT tid FROM replyto where repliedto_tid = (?)", tweet_tuple[0])
+        print(tweet_tuple)
+        cur.execute("SELECT tid FROM replyto where repliedto_tid = %s", (tweet_tuple[0],))
         rows = cur.fetchall()
 
         reply_ids = []
+        
         for row in rows:
             reply_ids.append(row[0])
-
+        print(reply_ids)
         for reply_id in reply_ids:
-            cur.execute("SELECT tweet FROM tweet where tid = (?)", reply_id)
+            cur.execute("SELECT tweet FROM tweet where tid = %s", (reply_id,))
             rows = cur.fetchall()
             reply = rows[0][0]
             file_handle.write(tweet_tuple[1] + "\t" + reply + "\n")
 
 left_screen_names = extract_screen_names("left")
 left_uids = extract_uids(left_screen_names)
+print(left_uids)
+print("**left screen names extracted***")
 
 right_screen_names = extract_screen_names("right")
 right_uids = extract_uids(right_screen_names)
+print(right_uids)
+print("**right screen names extracted***")
 
 tweets = []
 replies = []
 
 left_tweets = extract_tweets(left_uids)
+print("**left tweets extracted***")
+print(left_tweets[0:10])
 right_tweets = extract_tweets(right_uids)
-
-left_tweet_dataset = open("left_tweet_dataset.tsv", "w")
+print("**right tweets extracted***")
+print(right_tweets[0:10])
+left_tweet_dataset = open("../dataset/left_tweet_dataset.tsv", "w")
 create_dataset(left_tweet_dataset, left_tweets)
 
-right_tweet_dataset = open("right_tweet_dataset.tsv", "w")
+right_tweet_dataset = open("../dataset/right_tweet_dataset.tsv", "w")
 create_dataset(right_tweet_dataset, right_tweets)

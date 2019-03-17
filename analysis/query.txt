@@ -1,0 +1,17 @@
+SELECT count(distinct(screen_name)) FROM user_label WHERE label = 'left';
+SELECT count(distinct(screen_name)) FROM user_label WHERE label = 'right';
+
+SELECT count(distinct(tid)) FROM tweet WHERE screen_name in (SELECT distinct(screen_name) FROM user_label WHERE label = 'left');
+SELECT count(distinct(tid)) FROM tweet WHERE screen_name in (SELECT distinct(screen_name) FROM user_label WHERE label = 'right');
+
+SELECT sum(reply_count) FROM tweet WHERE screen_name in (SELECT distinct(screen_name) FROM user_label WHERE label = 'left');
+SELECT sum(reply_count) FROM tweet WHERE screen_name in (SELECT distinct(screen_name) FROM user_label WHERE label = 'right'); 
+
+SELECT sum(retweet_count) FROM tweet WHERE screen_name in (SELECT distinct(screen_name) FROM user_label WHERE label = 'left');
+SELECT sum(retweet_count) FROM tweet WHERE screen_name in (SELECT distinct(screen_name) FROM user_label WHERE label = 'right');
+
+SELECT sum(quote_count) FROM tweet WHERE screen_name in (SELECT distinct(screen_name) FROM user_label WHERE label = 'left');
+SELECT sum(quote_count) FROM tweet WHERE screen_name in (SELECT distinct(screen_name) FROM user_label WHERE label = 'right');
+
+SELECT sum(fav_count) FROM tweet WHERE screen_name in (SELECT distinct(screen_name) FROM user_label WHERE label = 'left');
+SELECT sum(fav_count) FROM tweet WHERE screen_name in (SELECT distinct(screen_name) FROM user_label WHERE label = 'right')

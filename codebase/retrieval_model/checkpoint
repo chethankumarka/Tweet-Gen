@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/sdhar3/Desktop/viraltweet/dataset/model.tflearn"
+all_model_checkpoint_paths: "/home/sdhar3/Desktop/viraltweet/dataset/model.tflearn"

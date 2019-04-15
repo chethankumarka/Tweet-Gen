@@ -9,15 +9,16 @@ import random
 import tensorflow as tf
 import tflearn
 
+
 stemmer = LancasterStemmer()
-data = pickle.load( open( "training_data", "rb" ) )
+data = pickle.load( open("/home/sdhar3/Desktop/viraltweet/codebase/retrieval_model/training_data", "rb") )
 
 words = data['words']
 classes = data['classes']
 train_x = data['train_x']
 train_y = data['train_y']
 
-with open('intent.json', "r") as json_data:
+with open('/home/sdhar3/Desktop/viraltweet/codebase/retrieval_model/intent.json', "r") as json_data:
     intents = json.load(json_data)
 
 tf.reset_default_graph()
@@ -27,7 +28,7 @@ net = tflearn.fully_connected(net, 8)
 net = tflearn.fully_connected(net, len(train_y[0]), activation='softmax')
 net = tflearn.regression(net)
 model = tflearn.DNN(net, tensorboard_dir='tflearn_logs')
-model.load('./model.tflearn')
+model.load('/home/sdhar3/Desktop/viraltweet/codebase/retrieval_model/model.tflearn')
 
 def clean_up_sentence(sentence):
     sentence_words = nltk.word_tokenize(sentence)
@@ -67,15 +68,15 @@ def response(sentence):
 
             results.pop(0)
 
-while(True):
-    choice = raw_input("Please enter your choice: 1) Predict response for the tweet 2) Exit\n")
-    if int(choice)==1:
-        try:
-            tweet = str(raw_input("Enter the tweet\n"))
-            reply = response(tweet)
-            print(reply)
-        except Exception as e:
-            print("Unicode error! Please type again\n" + str(e))
-            continue
-    else:
-        break
+# while(True):
+#     choice = raw_input("Please enter your choice: 1) Predict response for the tweet 2) Exit\n")
+#     if int(choice)==1:
+#         try:
+#             tweet = str(raw_input("Enter the tweet\n"))
+#             reply = response(tweet)
+#             print(reply)
+#         except Exception as e:
+#             print("Unicode error! Please type again\n" + str(e))
+#             continue
+#     else:
+#         break

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=PT+Sans'>
+<link rel="stylesheet" href="static/css/style.css">
+
+<style type="text/css">
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  margin: auto;
+  text-align: center;
+}
+
+.title {
+  color: grey;
+  font-size: 18px;
+}
+
+.wrapper {
+  width:150px;
+  height:150px;
+  margin: 25px auto;
+  overflow: hidden;
+  border-radius:50%;
+  position: relative;
+}
+
+.wrapper img {
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-50%,-50%)
+}
+
+.machine {
+}
+
+.machine::after {
+}
+
+#machine img {
+}
+
+#machine img.right {
+}
+
+
+</style>
+</head>
+<body>
+  <div class="card">
+    <img src="/static/images/rep5.jpg" alt="John" style="width:100%">
+    <h1>Mary Sue</h1>
+    <p class="title">Right wing</p>
+    <i class="fa fa-dribbble"></i> 
+    <i class="fa fa-twitter"></i> 
+    <i class="fa fa-linkedin"></i> 
+    <i class="fa fa-facebook"></i> 
+    <!-- <p><button>Contact</button></p> -->
+  </div>
+  <div class="container" id="container" style="height:300px;">
+    <div class="container__item" style="margin-top: 10px; clear: both">
+      <form class="form" align="center" style="margin-left: 700px">
+        <input type="email" id="tweet" class="form__field" placeholder="What's in your mind?"/>
+        <button type="button" class="btn btn--primary btn--inside uppercase" onclick="sendTweet()">Send</button>
+      </form>
+    </div>
+    <br/><br/>
+    <div id="machine" style="clear: both">
+    </div>    
+  </div>
+
+<script type="text/javascript">
+  function sendTweet(){
+    var xhttp = new XMLHttpRequest();
+    var url = "http://localhost:5000/response";
+    tweet = document.getElementById("tweet");
+    var formData = new FormData();
+    alert(tweet.value);
+    formData.append("tweet",tweet.value);
+    console.log(formData);
+    xhttp.onreadystatechange = function(){
+      if (this.readyState == 4 && this.status == 200) {
+        div = document.getElementById("machine");
+        div.innerHTML = "";
+        // div = document.createElement("div");
+        // div.className = "machine";
+        div.setAttribute("className", "machine");
+        div.setAttribute("style", "border: 3px solid #dedede;background-color: #f1f1f1;border-radius: 5px;padding: 10px;margin: 10px 0;");
+        // div.setAttribute("align", "center");
+
+        img = document.createElement("img");
+        img.setAttribute("src", "/static/images/bot.gif");
+        img.setAttribute("alt", "Avatar");
+        img.setAttribute("className", "right");
+        img.setAttribute("style", "max-width: 100px;height: 100px;width: 100%;margin-right: 10px;border-radius: 50%;float: right;margin-left: 20px;margin-right:0;")
+        br = document.createElement("br");
+        div.appendChild(br);
+        div.appendChild(img);
+
+        p = document.createElement("p");
+        p.innerHTML = this.responseText;
+        div.appendChild(p);
+        // container.appendChild(div);
+      }
+      else{
+      }
+    }
+    xhttp.open("POST", url, true);
+    xhttp.send(formData);
+  }
+    
+</script>
+</body>

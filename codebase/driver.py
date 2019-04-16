@@ -28,11 +28,12 @@ def chat():
     return render_template('chat.html')
 
 @app.route('/response', methods=['POST'])
-def response():
-    print(request.form)
+def response_model():
+    print(request.form.values)
     tweet = request.form.get('tweet')
     model_response = response(tweet)
+    print(model_response)
     return model_response
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()

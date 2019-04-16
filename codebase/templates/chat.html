@@ -35,7 +35,7 @@
   transform: translate(-50%,-50%)
 }
 
-#machine {
+.machine {
   border: 3px solid #dedede;
   background-color: #f1f1f1;
   border-radius: 5px;
@@ -43,14 +43,14 @@
   margin: 10px 0;
 }
 
-#machine::after {
+.machine::after {
   content: "";
   clear: both;
   display: table;
 }
 
 #machine img {
-  float: left;max-width: 100px;height: 100px;width: 100%;margin-right: 10px;border-radius: 50%;float: right;margin-left: 20px;margin-right:0;
+  max-width: 100px;height: 100px;width: 100%;margin-right: 10px;border-radius: 50%;float: right;margin-left: 0px;margin-right:0;
 }
 
 #machine img.right {
@@ -71,41 +71,49 @@
     <i class="fa fa-facebook"></i> 
     <!-- <p><button>Contact</button></p> -->
   </div>
-  <div class="container" id="container" style="height:300px">
+  <center>
+  <div class="container" id="container" style="height:300px;">
     <div class="container__item" style="margin-top: 10px">
       <form class="form">
-        <input type="email" id="tweet" class="form__field" placeholder="What's in your mind?" />
+        <input type="email" id="tweet" class="form__field" placeholder="What's in your mind?" style="margin-left:300px" />
         <button type="button" class="btn btn--primary btn--inside uppercase" onclick="sendTweet()">Send</button>
       </form>
-      <br/>
-      <div id="machine">
+      <div id="machine" class="machine" style="margin-left:300px">
         <img src="/static/images/bot.gif" alt="Avatar" class="right">
         <p>do today?</p>
       </div>
     </div>
+    <!-- <div id="machine" class="machine">
+        <img src="/static/images/bot.gif" alt="Avatar" class="right">
+        <p>do today?</p>
+      </div> -->
     
   </div>
+</center>
 <script type="text/javascript">
   function sendTweet(){
     var xhttp = new XMLHttpRequest();
     var url = "http://localhost:5000/response";
     tweet = document.getElementById("tweet");
     var formData = new FormData();
-    formData.append("tweet", tweet.innerHTML);
-    alert(tweet.innerHTML);
+    formData.append("tweet","hello");
+    console.log(formData);
     xhttp.onreadystatechange = function(){
       if (this.readyState == 4 && this.status == 200) {
         container = document.getElementById("container");
         div = document.createElement("div");
         div.className = "machine";
-        
+        div.setAttribute("style", "border: 3px solid #dedede;background-color: #f1f1f1;border-radius: 5px;padding: 10px;margin: 10px 0;margin-left: 100px");
+
         img = document.createElement("img");
         img.setAttribute("src", "/static/images/bot.gif");
         img.setAttribute("alt", "Avatar");
         img.setAttribute("className", "right");
         img.setAttribute("style", "float: left;max-width: 100px;height: 100px;width: 100%;margin-right: 10px;border-radius: 50%;float: right;margin-left: 20px;margin-right:0;")
+        br = document.createElement("br");
+        div.appendChild(br);
         div.appendChild(img);
-        
+
         p = document.createElement("p");
         p.innerHTML = this.responseText;
         div.appendChild(p);
@@ -114,8 +122,8 @@
       else{
       }
     }
-    xhttp.open("POST", url, true, formData);
-    xhttp.send();
+    xhttp.open("POST", url, true);
+    xhttp.send(formData);
   }
     
 </script>

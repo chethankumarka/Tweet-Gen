@@ -2,38 +2,39 @@ from flask import Flask, render_template, request
 from retrieval_model.retrieval import response
 app = Flask(__name__)
 
-@app.route('/')
+user_profile_map = {"john.daw@asu.edu": "chat_left.html", "mary.sue@asu.edu": "chat_right.html"}
+users = {"john.daw@asu.edu": "john123", "mary.sue@asu.edu": "mary123"}
+
+user = ""
+
+@app.route("/")
 def home():
-    return "Hello, World!"
+    return render_template("welcome.html")
 
-@app.route('/welcome')
+@app.route("/welcome")
 def welcome():
-    return render_template('welcome.html')
+    return render_template("welcome.html")
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route("/login", methods=["POST"])
 def login():
-    print("****")
-    print(request.form['username'])
-    print(request.form['password'])
-    if request.method == 'POST':
-        if request.form['username'] == 'user' or request.form['password'] == 'password':
-            return render_template('chat.html')
+    if request.method == "POST":
+        global user
+        user = request.form.get("username").lower()
+
+        if user in users.keys() and request.form.get("password") == users[user]:
+            return render_template(user_profile_map[user])
         else:
-            return render_template('welcome.html')
-    # print(error)
-    return render_template('chat.html')
+            return render_template("welcome.html")
 
-@app.route('/chat', methods=['GET'])
+@app.route("/chat", methods=["GET"])
 def chat():
-    return render_template('chat.html')
+    return render_template(user_profile_map[user])
 
-@app.route('/response', methods=['POST'])
+@app.route("/response", methods=["POST"])
 def response_model():
-    print(request.form.values)
-    tweet = request.form.get('tweet')
+    tweet = request.form.get("tweet")
     model_response = response(tweet)
-    print(model_response)
     return model_response
 
-if __name__ == '__main__':
-    app.run()
+if __name__ == "__main__":
+    app.run(debug=True)

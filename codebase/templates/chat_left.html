@@ -35,83 +35,20 @@
   transform: translate(-50%,-50%)
 }
 
-.machine {
-}
-
-.machine::after {
-}
-
-#machine img {
-}
-
-#machine img.right {
-}
-
-
 </style>
 </head>
-<body>
+{% block body %}
   <div class="card">
-    <img src="/static/images/demo4.png" alt="John" style="width:100%">
-    <h1>John Daw</h1>
-    <p class="title">Left wing</p>
-    <i class="fa fa-dribbble"></i> 
-    <i class="fa fa-twitter"></i> 
-    <i class="fa fa-linkedin"></i> 
-    <i class="fa fa-facebook"></i> 
-    <!-- <p><button>Contact</button></p> -->
+    <img src="/static/images/bot.gif" alt="bot" style="width:100%">
+    <!-- <h1>{{tweet|safe}}</h1> -->
+    <p class="title">Left wing</p> 
   </div>
-  <div class="container" id="container" style="height:300px;">
-    <div class="container__item" style="margin-top: 10px; clear: both">
-      <form class="form" align="center" style="margin-left: 700px">
-        <input type="email" id="tweet" class="form__field" placeholder="What's in your mind?"/>
-        <button type="button" class="btn btn--primary btn--inside uppercase" onclick="sendTweet()">Send</button>
-      </form>
-    </div>
-    <br/><br/>
-    <div id="machine" style="clear: both">
+  <div class="container" id="container" style="height:500px; width: 800px; margin-left: 400px">
+    <div id="machine" style="clear: both; color: black;">
+      <img src="/static/images/demo1.png" class="right" style="max-width: 100px;height: 100px;width: 100%;margin-right: 10px;border-radius: 50%;float: right;margin-left: 20px;margin-right:0;">
+      <center>
+      <p><b>Jaccard similarity:&nbsp;</b>{{reply1|safe}}</p><br/>
+      <p><b>Cosine similarity:&nbsp;</b>{{reply2|safe}}</p></center>
     </div>    
   </div>
-
-<script type="text/javascript">
-  function sendTweet(){
-    var xhttp = new XMLHttpRequest();
-    var url = "http://localhost:5000/response";
-    tweet = document.getElementById("tweet");
-    var formData = new FormData();
-    alert(tweet.value);
-    formData.append("tweet",tweet.value);
-    console.log(formData);
-    xhttp.onreadystatechange = function(){
-      if (this.readyState == 4 && this.status == 200) {
-        div = document.getElementById("machine");
-        div.innerHTML = "";
-        // div = document.createElement("div");
-        // div.className = "machine";
-        div.setAttribute("className", "machine");
-        div.setAttribute("style", "border: 3px solid #dedede;background-color: #f1f1f1;border-radius: 5px;padding: 10px;margin: 10px 0;");
-        // div.setAttribute("align", "center");
-
-        img = document.createElement("img");
-        img.setAttribute("src", "/static/images/bot.gif");
-        img.setAttribute("alt", "Avatar");
-        img.setAttribute("className", "right");
-        img.setAttribute("style", "max-width: 100px;height: 100px;width: 100%;margin-right: 10px;border-radius: 50%;float: right;margin-left: 20px;margin-right:0;")
-        br = document.createElement("br");
-        div.appendChild(br);
-        div.appendChild(img);
-
-        p = document.createElement("p");
-        p.innerHTML = this.responseText;
-        div.appendChild(p);
-        // container.appendChild(div);
-      }
-      else{
-      }
-    }
-    xhttp.open("POST", url, true);
-    xhttp.send(formData);
-  }
-    
-</script>
-</body>
+{% endblock %}

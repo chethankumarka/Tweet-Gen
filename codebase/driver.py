@@ -1,40 +1,33 @@
 from flask import Flask, render_template, request
-from retrieval_model.retrieval import response
+from retrieval_model.retrieval import ui_response
 app = Flask(__name__)
 
-user_profile_map = {"john.daw@asu.edu": "chat_left.html", "mary.sue@asu.edu": "chat_right.html"}
-users = {"john.daw@asu.edu": "john123", "mary.sue@asu.edu": "mary123"}
+wing_map = {"left": "chat_left.html", "right": "chat_right.html"}
 
-user = ""
+user = None
+wing = None
+tweet = None
+reply1 = None
+reply2 = None
 
 @app.route("/")
 def home():
-    return render_template("welcome.html")
+    return render_template("home.html")
 
-@app.route("/welcome")
-def welcome():
-    return render_template("welcome.html")
-
-@app.route("/login", methods=["POST"])
-def login():
-    if request.method == "POST":
-        global user
-        user = request.form.get("username").lower()
-
-        if user in users.keys() and request.form.get("password") == users[user]:
-            return render_template(user_profile_map[user])
-        else:
-            return render_template("welcome.html")
+@app.route("/tweet", methods=["POST"])
+def post_tweet():
+    global wing, tweet, reply1, reply2
+    tweet = request.form.get("tweet")
+    res = ui_response(tweet)
+    wing = res[0]
+    reply1 = res[1]
+    reply2 = res[2]
+    return chat()
 
 @app.route("/chat", methods=["GET"])
 def chat():
-    return render_template(user_profile_map[user])
-
-@app.route("/response", methods=["POST"])
-def response_model():
-    tweet = request.form.get("tweet")
-    model_response = response(tweet)
-    return model_response
+    global wing, tweet, reply1, reply2
+    return render_template(wing_map[wing], tweet=tweet, wing=wing, reply1=reply1, reply2=reply2)
 
 if __name__ == "__main__":
     app.run(debug=True)

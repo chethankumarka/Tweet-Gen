@@ -10,7 +10,7 @@ import tflearn
 
 stemmer = LancasterStemmer()
 intents = {}
-with open('intent.json', "r", encoding="utf-8") as json_data:
+with open('intent.json', "r") as json_data:
     intents = json.load(json_data)
 
 words = []
@@ -72,4 +72,4 @@ model = tflearn.DNN(net, tensorboard_dir='tflearn_logs')
 model.fit(train_x, train_y, n_epoch=200, batch_size=8, show_metric=True)
 model.save('model.tflearn')
 
-pickle.dump( {'words':words, 'classes':classes, 'train_x':train_x, 'train_y':train_y}, open( "training_data", "wb", encoding="utf-8" ) )
+pickle.dump( {'words':words, 'classes':classes, 'train_x':train_x, 'train_y':train_y}, open( "training_data", "wb" ) )

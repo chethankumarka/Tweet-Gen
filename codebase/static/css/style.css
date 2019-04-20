@@ -18,21 +18,19 @@ a:hover {
 }
 
 .container {
-  /*display: -webkit-box;*/
-  /*display: -ms-flexbox;*/
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  height: 300px;
-
-  /*-webkit-box-orient: vertical;*/
-  /*-webkit-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
       -ms-flex-direction: column;
-          flex-direction: column;*/
-  /*-webkit-box-align: center;
+          flex-direction: column;
+  -webkit-box-align: center;
       -ms-flex-align: center;
-          align-items: center;*/
-  /*-webkit-box-pack: center;
+          align-items: center;
+  -webkit-box-pack: center;
       -ms-flex-pack: center;
-          justify-content: center;*/
+          justify-content: center;
 }
 
 .uppercase {
@@ -70,7 +68,7 @@ a:hover {
 }
 
 .form__field {
-  width: 360px;
+  width: 860px;
   background: #fff;
   color: #a3a3a3;
   font: inherit;

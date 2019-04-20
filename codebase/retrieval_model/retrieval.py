@@ -9,6 +9,29 @@ import random
 import tensorflow as tf
 import tflearn
 
+import nltk.corpus
+import nltk.tokenize.punkt
+import nltk.stem.snowball
+import string
+from collections import Counter
+import operator
+import math
+
+import sys  
+reload(sys)  
+sys.setdefaultencoding('utf8')
+
+
+######
+#Accuracy for left tag: 14/19
+#Accuracy for right tag: 152/159 
+######
+
+stopwords = nltk.corpus.stopwords.words('english')
+stopwords.extend(string.punctuation)
+stopwords.append('')
+
+tokenizer = nltk.tokenize.TreebankWordTokenizer()
 
 stemmer = LancasterStemmer()
 data = pickle.load( open("/home/sdhar3/Desktop/viraltweet/codebase/retrieval_model/training_data", "rb") )
@@ -58,15 +81,87 @@ def classify(sentence):
         return_list.append((classes[r[0]], r[1]))
     return return_list
 
+tags = []
+output_analysis = open("right_analysis.csv", "w")
 def response(sentence):
+    global tags
+    global output_analysis
+
     results = classify(sentence)
+    print(results)
+
     if results:
         while results:
             for i in intents['intents']:
                 if i['tag'] == results[0][0]:
-                    return random.choice(i['responses'])
+                    tags.append(i['tag'])
+                    res = fetch_response(sentence, i['patterns'], i['responses'])
+                    output_analysis.write("right," + str(results[0][0]) + "," + str(results[0][1]) + "," + res[0].strip() + "," + res[1].strip() + "\n")
+                    # return random.choice(i['responses'])
 
             results.pop(0)
+
+def fetch_response(input_tweet, tweets, responses):
+    js_map = {}
+    cs_map = {}
+
+    tokens_input = [token.lower().strip(string.punctuation) for token in tokenizer.tokenize(input_tweet) \
+    if token.lower().strip(string.punctuation) not in stopwords]
+
+    for index, tweet in enumerate(tweets):
+        tokens_tweet = [token.lower().strip(string.punctuation) for token in tokenizer.tokenize(tweet) \
+        if token.lower().strip(string.punctuation) not in stopwords]
+
+        js_map[index] = jaccard_similarity(tokens_input, tokens_tweet)
+        cs_map[index] = similarity(tokens_input, tokens_tweet)
+
+    sorted_js = sorted(js_map.items(), key=operator.itemgetter(1), reverse=True)
+    sorted_cs = sorted(cs_map.items(), key=operator.itemgetter(1), reverse=True)
+    
+    # print("##### Jaccard similar response:" + responses[sorted_js[0][0]])
+    # print("##### Cosine similar response:" + responses[sorted_cs[0][0]])
+    return [responses[sorted_js[0][0]], responses[sorted_cs[0][0]]]
+
+def jaccard_similarity(tokens_input, tokens_tweet):
+    return len(set(tokens_input).intersection(tokens_tweet)) / float(len(set(tokens_input).union(tokens_tweet)))
+
+def similarity(tokens_input, tokens_tweet):
+    counter_input, counter_tweet = Counter(tokens_input), Counter(tokens_tweet)
+    return length_similarity(counter_input, counter_tweet) * cosine_similarity(counter_input, counter_tweet)
+
+def cosine_similarity(c1, c2):
+    terms = set(c1).union(c2)
+    dotprod = sum(c1.get(k, 0) * c2.get(k, 0) for k in terms)
+    magA = math.sqrt(sum(c1.get(k, 0)**2 for k in terms))
+    magB = math.sqrt(sum(c2.get(k, 0)**2 for k in terms))
+    return dotprod / (magA * magB)
+
+def length_similarity(c1, c2):
+    lenc1 = sum(c1.itervalues())
+    lenc2 = sum(c2.itervalues())
+    return min(lenc1, lenc2) / float(max(lenc1, lenc2))
+
+def accuracy():
+    global tags
+
+    print("Accuracy:" + str(tags.count("right")*100/len(tags)))
+
+def ui_response(sentence):
+    results = classify(sentence)
+
+    if results:
+        while results:
+            for i in intents['intents']:
+                if i['tag'] == results[0][0]:
+                    res = fetch_response(sentence, i['patterns'], i['responses'])
+                    return [i['tag'], res[0], res[1]]
+
+# f = open("test_right_tweet_dataset.tsv", "r")
+# data = f.readlines()
+# for row in data:
+#     response(row.strip().split("\t")[0].encode('utf-8'))
+#     print("\n")
+# accuracy()
 
 # while(True):
 #     choice = raw_input("Please enter your choice: 1) Predict response for the tweet 2) Exit\n")

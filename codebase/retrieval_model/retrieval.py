@@ -1,23 +1,21 @@
 # -*- coding: utf-8 -*-
+from collections import Counter
 import json
+import math
 import nltk
+import nltk.corpus
 from nltk.stem.lancaster import LancasterStemmer
-
+import nltk.stem.snowball
+import nltk.tokenize.punkt
 import numpy as np
+import operator
 import pickle
 import random
+import string
+import sys
 import tensorflow as tf
 import tflearn
 
-import nltk.corpus
-import nltk.tokenize.punkt
-import nltk.stem.snowball
-import string
-from collections import Counter
-import operator
-import math
-
-import sys  
 reload(sys)  
 sys.setdefaultencoding('utf8')
 
@@ -97,7 +95,6 @@ def response(sentence):
                     tags.append(i['tag'])
                     res = fetch_response(sentence, i['patterns'], i['responses'])
                     output_analysis.write("right," + str(results[0][0]) + "," + str(results[0][1]) + "," + res[0].strip() + "," + res[1].strip() + "\n")
-                    # return random.choice(i['responses'])
 
             results.pop(0)
 
@@ -117,9 +114,7 @@ def fetch_response(input_tweet, tweets, responses):
 
     sorted_js = sorted(js_map.items(), key=operator.itemgetter(1), reverse=True)
     sorted_cs = sorted(cs_map.items(), key=operator.itemgetter(1), reverse=True)
-    
-    # print("##### Jaccard similar response:" + responses[sorted_js[0][0]])
-    # print("##### Cosine similar response:" + responses[sorted_cs[0][0]])
+
     return [responses[sorted_js[0][0]], responses[sorted_cs[0][0]]]
 
 def jaccard_similarity(tokens_input, tokens_tweet):
@@ -155,23 +150,3 @@ def ui_response(sentence):
                 if i['tag'] == results[0][0]:
                     res = fetch_response(sentence, i['patterns'], i['responses'])
                     return [i['tag'], res[0], res[1]]
-
-# f = open("test_right_tweet_dataset.tsv", "r")
-# data = f.readlines()
-# for row in data:
-#     response(row.strip().split("\t")[0].encode('utf-8'))
-#     print("\n")
-# accuracy()
-
-# while(True):
-#     choice = raw_input("Please enter your choice: 1) Predict response for the tweet 2) Exit\n")
-#     if int(choice)==1:
-#         try:
-#             tweet = str(raw_input("Enter the tweet\n"))
-#             reply = response(tweet)
-#             print(reply)
-#         except Exception as e:
-#             print("Unicode error! Please type again\n" + str(e))
-#             continue
-#     else:
-#         break

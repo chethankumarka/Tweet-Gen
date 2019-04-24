@@ -43,6 +43,8 @@ The directory structure is as below:
         
         -> static: contains the related js, css, images for the user interface built for the retrieval model. 
         
+        -> requirements.txt: lists the packages used.
+        
         -> templates: 
         
             -> home.html: the initial screen where a user can enter the tweet
@@ -70,6 +72,8 @@ The directory structure is as below:
     -> dataset
     
     -> images
+    
+    -> eval
 
 
 **Software requirements**
@@ -90,6 +94,9 @@ Packages to be installed:
 `flask`
 `flask_cors`
 
+or run the following command from codebase folder
+
+`pip install -r requirements.txt`
 
 **How to run?**
 
